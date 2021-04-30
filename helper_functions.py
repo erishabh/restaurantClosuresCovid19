@@ -1,6 +1,23 @@
 import pandas as pd
 
 def addressCleaner(df, address, city, state, zip_code, new_col):
+    """
+    Cleans the address of a given data frame by consolidating it from
+    different columns in a dataframe. 
+
+    addressCleaner(df, address, city, state, zip_code, new_col)
+
+    Arguments:
+    df:         DataFrame with columns that contain the address columns
+    address:    Column name in df that contains the street address
+    city:       Column name in df that contains the city
+    state:      Column name in df that contains the state
+    zip_code:   Column name in df that contains the zip code
+    new_col:    Column name that will contain the consolidated address
+
+    Returns:
+    df_copy:    A copy of the input df with new_col and all other address columns dropped
+    """
 
     # Making a copy of the dataframe
     df_copy = df.copy()
