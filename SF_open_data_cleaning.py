@@ -29,22 +29,47 @@ city_SF_list = city_SF["City"].tolist()
 # Extracting rows in SF
 business_CA = business_CA[business_CA['City'].isin(city_SF_list)]
 
-#################### cleaning business address ####################
+# Exporting the dataframe as a csv
+business_CA.to_csv('SF_open_data_city_only.csv', index = False, header = True)
 
-# Using function to clean address
-business_CA_st_ad = addressCleaner(business_CA, 'Street Address', 'City', 'State', 'Source Zipcode', 
+print('********************** EXPORT COMPLETE **********************')
+
+#################### cleaning zip ####################
+
+# Extracting 5 digit zipcode
+business_CA['zip_5'] = business_CA['Source Zipcode'].astype(str).str[:5]
+
+# Finding all unique zip codes
+zip_set = set(business_CA['zip_5'])
+
+# Converting the set to a dataframe
+zip_df = pd.DataFrame(list(zip_set))
+
+# Exporting the dataframe as a csv
+zip_df.to_csv('SF_open_data_zip.csv', index = False, header = False)
+
+print('********************** EXPORT COMPLETE **********************')
+
+# Import manually cleaned list of zip in SF
+zip_SF = pd.read_csv('SF_open_data_zip_clean.csv')
+
+# Converting from int to str
+zip_SF['Zip'] = zip_SF['Zip'].astype(str)
+
+# Convert zip_SF to list
+zip_SF_list = zip_SF["Zip"].tolist()
+
+# Extracting rows in SF
+business_CA = business_CA.loc[business_CA['zip_5'].isin(zip_SF_list)]
+
+# Dropping zip_5
+business_CA.drop(columns = ['zip_5'], inplace = True)
+
+# Cleaning business address
+business_CA_clean = addressCleaner(business_CA, 'Street Address', 'City', 'State', 'Source Zipcode', 
     'street_address')
 
-#################### Cleaning mail address ####################
-
-# Using function to clean address
-business_CA_all_ad = addressCleaner(business_CA_st_ad, 'Mail Address', 'Mail City', 'Mail State', 
-    'Mail Zipcode', 'mail_address')
-
-# Replacing nan in mail_address with street_address
-business_CA_all_ad['mail_address'].fillna(business_CA_all_ad['street_address'], inplace = True)
-
 # Exporting dataframe as csv file
-business_CA_all_ad.to_csv('SF_open_data_business_clean.csv', index = False, header = True)
+business_CA_clean.to_csv('SF_open_data_business_clean.csv', index = False, header = True)
 
 print('********************** EXPORT COMPLETE **********************')

@@ -50,3 +50,18 @@ def addressCleaner(df, address, city, state, zip_code, new_col):
     # Returning the dataframe
     return df_copy
 
+def naicsExtract(df, code_col, code):
+
+    # Making a copy of the dataframe
+    df_copy = df.copy()
+
+    # Making sure that all NAICS codes are full
+    df_copy[code_col].fillna(1111, inplace = True)
+
+    # Extracting naics code from dataset
+    df_copy['naics_4'] = (df_copy[code_col].astype(str).str[:4]).astype(int)
+
+    # Selecting rows that that have code_food
+    df_copy_naics = df_copy.loc[df_copy['naics_4'] == code]
+
+    return df_copy_naics
