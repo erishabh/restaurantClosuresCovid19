@@ -51,6 +51,22 @@ def addressCleaner(df, address, city, state, zip_code, new_col):
     return df_copy
 
 def naicsExtract(df, code_col, code):
+    """
+    Stracts rows from a dataframe that correspond to the specific NAICS code (starting 4 digits)
+
+    naicsExtract(df, code_col, code)
+
+    Arguments:
+
+    df:         DataFrame with columns that contain the data
+    code_col:   Column name in the df that contains the NAICS code
+    code:       NAICS code to be matched - starting 4 digits
+
+    Returns:
+    
+    df_copy_naics:    A copy of the input df with only rows corresponding to the NAICS code
+
+    """
 
     # Making a copy of the dataframe
     df_copy = df.copy()
@@ -63,5 +79,8 @@ def naicsExtract(df, code_col, code):
 
     # Selecting rows that that have code_food
     df_copy_naics = df_copy.loc[df_copy['naics_4'] == code]
+
+    # Dropping the naics_4 columns
+    df_copy_naics.drop(columns = ['naics_4'], inplace = True)
 
     return df_copy_naics
