@@ -1,8 +1,8 @@
 import pandas as pd
-from helper_functions import addressCleaner
+from helper_functions import *
 
 # Importing the original data file
-business_CA = pd.read_csv('SF_open_data_portal_business_raw.csv')
+business_CA = pd.read_csv('raw_data/SF_open_data_portal_business_raw.csv')
 
 # Deleteing all rows with address outside CA
 business_CA = business_CA[business_CA['State'] == 'CA']
@@ -16,12 +16,12 @@ city_set = set(business_CA['City'])
 city_df = pd.DataFrame(list(city_set))
 
 # Exporting the dataframe as a csv
-city_df.to_csv('SF_open_data_city.csv', index = False, header = True)
+city_df.to_csv('data_cleaning_helper/SF_open_data_city.csv', index = False, header = True)
 
 print('********************** EXPORT COMPLETE **********************')
 
 # Import manually cleaned list of cities in SF
-city_SF = pd.read_csv('SF_open_data_city_clean.csv')
+city_SF = pd.read_csv('data_cleaning_helper/SF_open_data_city_clean.csv')
 
 # Convert city_SF to list
 city_SF_list = city_SF["City"].tolist()
@@ -30,7 +30,7 @@ city_SF_list = city_SF["City"].tolist()
 business_CA = business_CA[business_CA['City'].isin(city_SF_list)]
 
 # Exporting the dataframe as a csv
-business_CA.to_csv('SF_open_data_city_only.csv', index = False, header = True)
+business_CA.to_csv('data_cleaning_helper/SF_open_data_city_only.csv', index = False, header = True)
 
 print('********************** EXPORT COMPLETE **********************')
 
@@ -46,12 +46,12 @@ zip_set = set(business_CA['zip_5'])
 zip_df = pd.DataFrame(list(zip_set))
 
 # Exporting the dataframe as a csv
-zip_df.to_csv('SF_open_data_zip.csv', index = False, header = False)
+zip_df.to_csv('data_cleaning_helper/SF_open_data_zip.csv', index = False, header = False)
 
 print('********************** EXPORT COMPLETE **********************')
 
 # Import manually cleaned list of zip in SF
-zip_SF = pd.read_csv('SF_open_data_zip_clean.csv')
+zip_SF = pd.read_csv('data_cleaning_helper/SF_open_data_zip_clean.csv')
 
 # Converting from int to str
 zip_SF['Zip'] = zip_SF['Zip'].astype(str)
@@ -69,7 +69,15 @@ business_CA.drop(columns = ['zip_5'], inplace = True)
 business_CA_clean = addressCleaner(business_CA, 'Street Address', 'City', 'State', 'Source Zipcode', 
     'street_address')
 
+#################### extracting NAICS ####################
+
+# Storing the NAICS code 
+code = 7220
+
+# Selecting rows that that have code
+sf_business_food = naicsExtract(business_CA_clean, 'NAICS Code', code)
+
 # Exporting dataframe as csv file
-business_CA_clean.to_csv('SF_open_data_business_clean.csv', index = False, header = True)
+sf_business_food.to_csv('clean_data_parts/SF_open_data_business_clean.csv', index = False, header = True)
 
 print('********************** EXPORT COMPLETE **********************')
