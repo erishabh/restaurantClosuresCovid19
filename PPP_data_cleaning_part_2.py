@@ -10,7 +10,7 @@ ppp_fd_4 = pd.read_csv('ppp_data_parts_geocoded/PPP_SF_food_drink_4_coded.csv')
 ppp_fd = pd.concat([ppp_fd_1, ppp_fd_2, ppp_fd_3, ppp_fd_4])
 
 # Exporting the dataframe as a csv
-ppp_fd.to_csv('clean_data_parts/PPP_SF_food_drink_tract.csv', index = False, header = True)
+ppp_fd.to_csv('clean_data/PPP_SF_food_drink_tract.csv', index = False, header = True)
 
 print('********************** EXPORT COMPLETE **********************')
 
@@ -50,7 +50,7 @@ ppp_fd = ppp_fd.loc[ppp_fd['clean_tract'] != '0']
 #################### merging ACS data ####################
 
 # Importing the acs data = covid data
-acs_data = pd.read_csv('clean_data_parts/ACS_data.csv')
+acs_data = pd.read_csv('clean_data/SF_ACS_covid.csv')
 
 # Making sure that all columns are string
 acs_data['census_tract'] = acs_data['census_tract'].astype(str)
@@ -62,9 +62,9 @@ acs_data['census_tract'] = acs_data['census_tract'].replace(regex = r'(\.0)$', v
 ppp_fd = ppp_fd.merge(acs_data, how = 'left', left_on = 'clean_tract', right_on = 'census_tract', validate = 'm:1')
 
 # Dropping other tract columns
-ppp_fd.drop(columns = ['clean_tract'], inplace = True)
+ppp_fd.drop(columns = ['clean_tract', 'geometry'], inplace = True)
 
 # Exporting the dataframe as a csv
-ppp_fd.to_csv('clean_data_parts/PPP_ACS_food_drink.csv', index = False, header = True)
+ppp_fd.to_csv('clean_data/PPP_ACS_Covid_food_drink.csv', index = False, header = True)
 
 print('********************** EXPORT COMPLETE **********************')

@@ -1,6 +1,8 @@
 import pandas as pd
 from helper_functions import *
 
+################################ NOT BEING USED ANYMORE ################################
+
 # Importing the original data file
 business_CA = pd.read_csv('raw_data/SF_open_data_portal_business_raw.csv')
 
@@ -69,15 +71,7 @@ business_CA.drop(columns = ['zip_5'], inplace = True)
 business_CA_clean = addressCleaner(business_CA, 'Street Address', 'City', 'State', 'Source Zipcode', 
     'street_address')
 
-#################### extracting NAICS ####################
-
-# Storing the NAICS code 
-code = 7220
-
-# Selecting rows that that have code
-sf_business_food = naicsExtract(business_CA_clean, 'NAICS Code', code)
-
 # Exporting dataframe as csv file
-sf_business_food.to_csv('clean_data_parts/SF_open_data_business_clean.csv', index = False, header = True)
+business_CA_clean.to_csv('clean_data_parts/SF_open_data_business_clean.csv', index = False, header = True)
 
 print('********************** EXPORT COMPLETE **********************')
