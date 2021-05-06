@@ -1,2 +1,3 @@
-// Ignoring all csv data files
+// Ignoring all csv and xlsx data files
 *.csv
+*.xlsx

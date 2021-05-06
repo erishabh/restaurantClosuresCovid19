@@ -12,7 +12,7 @@ def addressCleaner(df, address, city, state, zip_code, new_col):
     df:         DataFrame with columns that contain the address columns
     address:    Column name in df that contains the street address
     city:       Column name in df that contains the city (only used for column deletion)
-    state:      Column name in df that contains the state
+    state:      Column name in df that contains the state (only used for column deletion)
     zip_code:   Column name in df that contains the zip code
     new_col:    Column name that will contain the consolidated address
 
@@ -27,9 +27,6 @@ def addressCleaner(df, address, city, state, zip_code, new_col):
     # Making columns lowercase [Street Address, City]
     df_copy[address] = df_copy[address].str.lower()
 
-    # Making state uppercase
-    df_copy[state] = df_copy[state].str.upper()
-
     # Splitting relevent columns on non-word elements [Street Address, City]
     df_copy['street_add_list'] = df_copy[address].str.split(pat = r'\b\W')
 
@@ -40,8 +37,7 @@ def addressCleaner(df, address, city, state, zip_code, new_col):
     df_copy['street_add_list_join'] = df_copy['street_add_list'].str.join(sep = ' ')
 
     # Joining all street address columns together
-    df_copy[new_col] = (df_copy['street_add_list_join'] + ', san francisco, ' + df_copy[state] 
-        + ', ' + df_copy['zip_5'])
+    df_copy[new_col] = (df_copy['street_add_list_join'] + ', san francisco, CA, ' + df_copy['zip_5'])
 
     # Deleting extraneous columns
     df_copy.drop(columns = ['street_add_list', 'zip_5', 'street_add_list_join', 
@@ -84,3 +80,35 @@ def naicsExtract(df, code_col, code):
     df_copy_naics.drop(columns = ['naics_4'], inplace = True)
 
     return df_copy_naics
+
+def yCreate7(row):
+    if (row['CurrentApprovalAmount'] > 0) and (row['CurrentApprovalAmount'] <= 25000):
+        return 'Tier 1'
+    elif (row['CurrentApprovalAmount'] >= 25000) and (row['CurrentApprovalAmount'] < 50000):
+        return 'Tier 2'
+    elif (row['CurrentApprovalAmount'] >= 50000) and (row['CurrentApprovalAmount'] < 75000):
+        return 'Tier 3'
+    elif (row['CurrentApprovalAmount'] >= 75000) and (row['CurrentApprovalAmount'] < 100000):
+        return 'Tier 4'
+    elif (row['CurrentApprovalAmount'] >= 100000) and (row['CurrentApprovalAmount'] < 125000):
+        return 'Tier 5'
+    elif (row['CurrentApprovalAmount'] >= 125000) and (row['CurrentApprovalAmount'] < 150000):
+        return 'Tier 6'
+    else:
+        return 'Tier 7'
+
+def yCreate4(row):
+    if (row['CurrentApprovalAmount'] > 0) and (row['CurrentApprovalAmount'] <= 50000):
+        return 'Tier 1'
+    elif (row['CurrentApprovalAmount'] >= 50000) and (row['CurrentApprovalAmount'] < 100000):
+        return 'Tier 2'
+    elif (row['CurrentApprovalAmount'] >= 100000) and (row['CurrentApprovalAmount'] < 150000):
+        return 'Tier 3'
+    else:
+        return 'Tier 4'
+
+def yCreate2(row):
+    if (row['CurrentApprovalAmount'] > 0) and (row['CurrentApprovalAmount'] <= 150000):
+        return 'Tier 1'
+    else:
+        return 'Tier 2'
